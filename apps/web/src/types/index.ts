@@ -44,6 +44,7 @@ export interface Segment {
   nlQuery: string | null;
   filterJson: Record<string, unknown>;
   audienceSize: number | null;
+  audienceCount?: number | null;
   createdAt: string;
 }
 

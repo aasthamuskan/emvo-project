@@ -24,7 +24,7 @@ export default function SegmentsPage() {
   });
 
   const segments = data?.segments ?? [];
-  const totalAudience = segments.reduce((s, sg) => s + (sg.audienceCount ?? 0), 0);
+  const totalAudience = segments.reduce((s, sg) => s + (sg.audienceCount ?? sg.audienceSize ?? 0), 0);
 
   return (
     <div className="page-container">
@@ -110,7 +110,7 @@ export default function SegmentsPage() {
                     <Filter size={17} color={neon.border} />
                   </div>
 
-                  {segment.audienceCount != null && (
+                  {(segment.audienceCount ?? segment.audienceSize) != null && (
                     <div style={{ textAlign: "right" }}>
                       <p style={{
                         fontFamily: "var(--font-display)", fontWeight: 700,
@@ -118,7 +118,7 @@ export default function SegmentsPage() {
                         textShadow: `0 0 12px ${neon.border}`,
                         letterSpacing: "0.02em",
                       }}>
-                        {formatNumber(segment.audienceCount)}
+                        {formatNumber(segment.audienceCount ?? segment.audienceSize ?? 0)}
                       </p>
                       <p style={{ color: "var(--text-muted)", fontSize: "10px", display: "flex", alignItems: "center", gap: "3px", justifyContent: "flex-end", marginTop: "2px" }}>
                         <Users size={9} /> shoppers
