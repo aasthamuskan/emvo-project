@@ -27,7 +27,7 @@ export function ParticleBackground() {
   const particlesRef = useRef<Particle[]>([]);
   const mouseRef = useRef({ x: -1000, y: -1000 });
   const animRef = useRef<number>(0);
-  const resizeRef = useRef<ReturnType<typeof setTimeout>>();
+  const resizeRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const initParticles = useCallback((w: number, h: number) => {
     const count = Math.min(Math.floor((w * h) / 14000), 90);

@@ -235,7 +235,7 @@ export function PlannerPreview({ plan, onLaunch, isLaunching, launched }: Planne
           borderRadius: "12px",
           fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: "14px",
           display: "flex", alignItems: "center", justifyContent: "center", gap: "10px",
-          border: "none", cursor: isLaunching || launched ? "not-allowed" : "pointer",
+          cursor: isLaunching || launched ? "not-allowed" : "pointer",
           transition: "all 0.25s",
           background: launched
             ? "rgba(0,255,136,0.12)"
