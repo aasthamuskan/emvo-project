@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: emvo-channel-service
+    env: node
+    region: singapore
+    plan: free
+    rootDir: apps/channel-service
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001

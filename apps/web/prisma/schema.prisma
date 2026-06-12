@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  city      String?
+  tags      String[]
+  createdAt DateTime @default(now()) @map("created_at")
+
+  orders   Order[]
+  messages Message[]
+
+  @@index([email])
+  @@map("customers")
+}
+
+model Order {
+  id          String   @id @default(uuid())
+  customerId  String   @map("customer_id")
+  totalAmount Decimal  @map("total_amount") @db.Decimal(10, 2)
+  status      String   @default("completed")
+  orderedAt   DateTime @map("ordered_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([orderedAt])
+  @@index([totalAmount])
+  @@map("orders")
+}
+
+model Segment {
+  id           String   @id @default(uuid())
+  name         String
+  description  String?
+  nlQuery      String?  @map("nl_query")
+  filterJson   Json     @map("filter_json")
+  sqlWhere     String?  @map("sql_where")
+  audienceSize Int?     @map("audience_size")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  campaigns Campaign[]
+
+  @@map("segments")
+}
+
+model Campaign {
+  id          String    @id @default(uuid())
+  name        String
+  segmentId   String?   @map("segment_id")
+  channel     String
+  messageBody String    @map("message_body")
+  status      String    @default("draft")
+  scheduledAt DateTime? @map("scheduled_at")
+  launchedAt  DateTime? @map("launched_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  aiInsight   String?   @map("ai_insight")
+
+  segment  Segment?  @relation(fields: [segmentId], references: [id])
+  messages Message[]
+
+  @@index([status])
+  @@index([segmentId])
+  @@map("campaigns")
+}
+
+model Message {
+  id          String    @id @default(uuid())
+  campaignId  String    @map("campaign_id")
+  customerId  String    @map("customer_id")
+  channel     String
+  body        String
+  status      String    @default("queued")
+  sentAt      DateTime? @map("sent_at")
+  deliveredAt DateTime? @map("delivered_at")
+  openedAt    DateTime? @map("opened_at")
+  clickedAt   DateTime? @map("clicked_at")
+  convertedAt DateTime? @map("converted_at")
+  failedAt    DateTime? @map("failed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  campaign Campaign       @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  customer Customer       @relation(fields: [customerId], references: [id])
+  events   MessageEvent[]
+
+  @@index([campaignId])
+  @@index([customerId])
+  @@index([status])
+  @@map("messages")
+}
+
+model MessageEvent {
+  id         String   @id @default(uuid())
+  messageId  String   @map("message_id")
+  eventType  String   @map("event_type")
+  payload    Json?
+  receivedAt DateTime @default(now()) @map("received_at")
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+  @@index([receivedAt])
+  @@map("message_events")
+}
